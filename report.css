@@ -1,26 +1,19 @@
-/* table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-} */
-
-/* th,td {
-    padding: 5px;
-    text-align: center;
-}
-table th {
-    background-color: aquamarine;
-    color: black;
-} */
-
 body { padding: 0.2em 2em; }
 
-table { width: 100%; }
+table {
+    border: 1px solid black;
+    width: 100%;
+    border-collapse: collapse;
+}
 
 table th { border-bottom: 1px solid #ccc; }
 
-table th, table td { padding: 0.4em; }
+table th, table td { padding: 0.4em; text-align: center; }
 
-table.fold-table > tbody > tr.view td, table.fold-table > tbody > tr.view th { cursor: pointer; }
+table.fold-table > tbody > tr.view td, 
+table.fold-table > tbody > tr.view th { 
+    cursor: pointer; 
+}
 
 table.fold-table > tbody > tr.view td:first-child,
 table.fold-table > tbody > tr.view th:first-child {
@@ -38,15 +31,39 @@ table.fold-table > tbody > tr.view th:first-child:before {
   margin-top: -8px;
   font: 16px;
   color: #999;
+  transform: rotate(-90deg);
   content: "▼";
   transition: all 0.3s ease;
 }
 
+table.fold-table > tbody > tr.view:nth-child(4n-1) {
+    background: #eee;
+}
+
+table.fold-table > tbody > tr.view.open {
+    background: tomato;
+    color: white;
+}
+
+table.fold-table > tbody > tr.view.open td:first-child:before,
+table.fold-table > tbody > tr.view.open th:first-child:before {
+    transform: rotate(0deg);
+    color: #333;
+}
+
 table.fold-table > tbody > tr.view:hover { background: lightskyblue; }
 
-/* table.fold-table > tbody > tr.fold { display: none; } */
+table.fold-table > tbody > tr.fold { display: none; }
 
-/* table.fold-table > tbody > tr.fold.open { display: table-row; } */
+table.fold-table > tbody > tr.fold.open { display: table-row; }
+
+.fold-content {
+    padding: 0.5em;
+}
+
+.fold-content > table {
+    border: 2px solid #ccc;
+}
 
 /* table fold-table {
     > tbody {
