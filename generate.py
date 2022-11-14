@@ -10,7 +10,8 @@ htmlForm = '''<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="report.css">
+    <link rel="stylesheet" type="text/css" href="../report.css">
+    <script src="../report.js"></script>
     <title>GTest Reports</title>
 </head>
 <body>
@@ -21,54 +22,78 @@ htmlForm = '''<!DOCTYPE html>
 </html>'''
 
 ReportHeader = \
-    "<tr>\
-        <th>Test Name</th>\
-        <th>Total Unit Tests</th>\
-        <th>Failed Unit Tests</th>\
-        <th>Disabled Unit Tests</th>\
-        <th>Timestamp</th>\
-    </tr>\n"
+    "<thead>\
+        <tr>\
+            <th>Test Name</th>\
+            <th>Total Unit Tests</th>\
+            <th>Failed Unit Tests</th>\
+            <th>Disabled Unit Tests</th>\
+            <th>Timestamp</th>\
+        </tr>\
+    </thead>\n"
+
+DetailReportHeader = \
+    "<thead>\
+        <tr>\
+            <th>Name</th>\
+            <th>Tests</th>\
+            <th>Failed</th>\
+            <th>Disabled</th>\
+            <th>Time</th>\
+        </tr>\
+    </thead>"
 
 outputFileName = "index.html"
 
 
-def genTableRows(data):
-    ret = "<tr>"
-    ret += genTableItem(data)
+def genTableRows(data, depth):
+    ret = ""
+    if (depth == 1):
+        ret += "<tr class=\"view\">"
+    else:
+        ret += "<tr class=\"fold\">"
+    ret += genTableItem(data, depth)
     ret += "</tr>"
-    print(ret)
     return ret
 
 
-def genTableItem(data):
+def genTableItem(data, depth):
     ret = ""
+    if (depth != 1):
+        ret += "<td colspan=\"5\"><table>"
+        ret += DetailReportHeader
+        ret += "<tbody>"
+
     for item in data:
         ret += f"<td>{item}</td>"
+
+    if (depth != 1):
+        ret += "</table></td>"
     return ret
 
 
 def genHTMLDoc(inFiles, outDir):
     totTCNum = 0
-    reports = ""
+    reports = "<tbody>"
 
     for fName in inFiles:
-        print(fName)
         fNameOnly = os.path.basename(fName)
-        print(f"fileName {fNameOnly}")
         fileXML = elemTree.parse(fName)
         root = fileXML.getroot()
-        print(root.tag)
-        print(root.attrib)
+        # print(root.tag)
+        # print(root.attrib)
         reports += genTableRows([fNameOnly, root.attrib['tests'], root.attrib['failures'],
-                                 root.attrib['disabled'], root.attrib['timestamp']])
+                                 root.attrib['disabled'], root.attrib['timestamp']], 1)
+        suites = root.findall('./testsuite')
+        for suite in suites:
+            pass
 
+    reports += "</tbody>"
     htmlDoc = htmlForm.format(report=ReportHeader + reports)
     # print(htmlDoc)
-    print(outDir + "/" + outputFileName)
     with open(outDir + "/"+outputFileName, "wb") as writer:
         writer.write(htmlDoc.encode('utf-8'))
 
-#        suites = root.findall('./testsuite')
 #        print(len(suites))
 #        print(suites)
 #        for suite in suites:
@@ -95,7 +120,7 @@ if __name__ == '__main__':
         shutil.rmtree(outputDir, ignore_errors=True)
     os.makedirs(outputDir)
 
-    # TODO: input folder exist & check at lease one file
+    # Input folder exist & check at lease one XML file
     if not os.path.isdir(inputDir):
         print(f"Directory \"{inputDir}\" is not exist. Terminate")
         sys.exit(0)
@@ -103,9 +128,10 @@ if __name__ == '__main__':
     inputFiles = glob.glob(inputDir + "/*.xml")
     if len(inputFiles) == 0:
         print(f"There is no xml file in \"{inputDir}\". Terminate")
-    print(inputFiles)
+    # print(inputFiles)
 
-    # TODO: processing
+    # Generate HTML Doc from XML files
     genHTMLDoc(inputFiles, outputDir)
 
     shutil.copy("report.css", outputDir)
+    shutil.copy("report.js", outputDir)

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="report.css">
+    <title>GTest Reports</title>
+</head>
+<body>
+    <table id="main-table" class="fold-table">
+        <thead>
+            <tr>
+                <th>Test Name</th>
+                <th>Total Unit Tests</th>
+                <th>Failed Unit Tests</th>
+                <th>Disabled Unit Tests</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="view">
+                <td>sample.xml</td><td>1</td><td>0</td><td>0</td><td>2022-11-01T15:24:51</td>
+            </tr>
+            <tr calss="fold">
+                <td colspan="5">
+                    <div class="fold-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Tests</th>
+                                    <th>Failed</th>
+                                    <th>Disabled</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>UnitTest/Sample1</td>
+                                    <td>1</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0.014</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="report.js"></script>
+</body>
+</html>
