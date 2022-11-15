@@ -3,6 +3,7 @@ import os
 import glob
 import shutil
 import xml.etree.ElementTree as elemTree
+from datetime import datetime
 
 htmlForm = '''<!DOCTYPE html>
 <html lang="en">
@@ -80,20 +81,27 @@ def genTableItem(data):
 
 
 def genHTMLDoc(inFiles, outDir):
-    totTCNum = 0
-    reports = "<tbody>"
+    totTestNum = 0
+    totFailNum = 0
+    totDisabledNum = 0
+    reports = ""
 
     for fName in inFiles:
         fNameOnly = os.path.basename(fName)
         fileXML = elemTree.parse(fName)
         root = fileXML.getroot()
+        totTestNum += int(root.attrib['tests'])
+        totFailNum += int(root.attrib['failures'])
+        totDisabledNum += int(root.attrib['disabled'])
         reports += genTableRows([fNameOnly, root.attrib['tests'], root.attrib['failures'],
                                  root.attrib['disabled'], root.attrib['timestamp']], 1)
         suites = root.findall('./testsuite')
         for suite in suites:
             pass
 
-    reports += "</tbody>"
+    reports = genTableRows(["Total", str(totTestNum), str(totFailNum), str(
+        totDisabledNum), datetime.now().strftime('%Y-%m-%dT%H:%M:%S')], 1) + reports
+    reports = "<tbody>" + reports + "</tbody>"
     htmlDoc = htmlForm.format(report=ReportHeader + reports)
     # print(htmlDoc)
     with open(outDir + "/"+outputFileName, "wb") as writer:
