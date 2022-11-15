@@ -14,8 +14,8 @@ htmlForm = '''<!DOCTYPE html>
     src="https://code.jquery.com/jquery-3.6.1.slim.min.js"
     integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA="
     crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="../report.css">
-    <script src="../report.js"></script>
+    <link rel="stylesheet" type="text/css" href="report.css">
+    <script src="report.js"></script>
     <title>GTest Reports</title>
 </head>
 <body>
@@ -28,6 +28,7 @@ htmlForm = '''<!DOCTYPE html>
 ReportHeader = \
     "<thead>\
         <tr>\
+            <th>Status</th>\
             <th>Test Name</th>\
             <th>Total Unit Tests</th>\
             <th>Failed Unit Tests</th>\
@@ -50,29 +51,31 @@ DetailReportHeader = \
 outputFileName = "index.html"
 
 
+def appendImage(data):
+    if (data[2] != '0'):
+        ret = '''<td><img src="fail.png" style="width:16px;height:16px"></td>'''
+    elif (data[3] != '0'):
+        ret = '''<td><img src="warning.png" style="width:16px;height:16px"></td>'''
+    else:
+        ret = '''<td><img src="pass.png" style="width:16px;height:16px"></td>'''
+    return ret
+
 def genTableRows(data, depth):
     ret = ""
     if (depth == 1):
         ret += "<tr class=\"view\">"
+        ret += appendImage(data)
     else:
         ret += "<tr class=\"fold\">"
-    ret += genTableItem(data, depth)
+    ret += genTableItem(data)
     ret += "</tr>"
     return ret
 
 
-def genTableItem(data, depth):
+def genTableItem(data):
     ret = ""
-    if (depth != 1):
-        ret += "<td colspan=\"5\"><table>"
-        ret += DetailReportHeader
-        ret += "<tbody>"
-
     for item in data:
         ret += f"<td>{item}</td>"
-
-    if (depth != 1):
-        ret += "</table></td>"
     return ret
 
 
@@ -122,7 +125,8 @@ if __name__ == '__main__':
     if os.path.isdir(outputDir):
         print(f"Remove files in the \"{outputDir}\"")
         shutil.rmtree(outputDir, ignore_errors=True)
-    os.makedirs(outputDir)
+    shutil.copytree("resources", outputDir)
+    # os.makedirs(outputDir)
 
     # Input folder exist & check at lease one XML file
     if not os.path.isdir(inputDir):
@@ -137,5 +141,5 @@ if __name__ == '__main__':
     # Generate HTML Doc from XML files
     genHTMLDoc(inputFiles, outputDir)
 
-    shutil.copy("report.css", outputDir)
-    shutil.copy("report.js", outputDir)
+    #shutil.copy("report.js", outputDir)
+    #shutil.copy("resources/pass.png", outputDir)
