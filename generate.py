@@ -87,8 +87,6 @@ def genHTMLDoc(inFiles, outDir):
         fNameOnly = os.path.basename(fName)
         fileXML = elemTree.parse(fName)
         root = fileXML.getroot()
-        # print(root.tag)
-        # print(root.attrib)
         reports += genTableRows([fNameOnly, root.attrib['tests'], root.attrib['failures'],
                                  root.attrib['disabled'], root.attrib['timestamp']], 1)
         suites = root.findall('./testsuite')
@@ -126,7 +124,6 @@ if __name__ == '__main__':
         print(f"Remove files in the \"{outputDir}\"")
         shutil.rmtree(outputDir, ignore_errors=True)
     shutil.copytree("resources", outputDir)
-    # os.makedirs(outputDir)
 
     # Input folder exist & check at lease one XML file
     if not os.path.isdir(inputDir):
@@ -136,10 +133,6 @@ if __name__ == '__main__':
     inputFiles = glob.glob(inputDir + "/*.xml")
     if len(inputFiles) == 0:
         print(f"There is no xml file in \"{inputDir}\". Terminate")
-    # print(inputFiles)
 
     # Generate HTML Doc from XML files
     genHTMLDoc(inputFiles, outputDir)
-
-    #shutil.copy("report.js", outputDir)
-    #shutil.copy("resources/pass.png", outputDir)

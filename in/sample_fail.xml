@@ -1,0 +1,8 @@
+<testsuites tests="2" failures="1" disabled="0" errors="0" timestamp="2022-11-01T15:24:51" time="1.083" name="AllTests">
+    <testsuite name="UnitTest/Sample1" tests="1" failures="1" disabled="0" errors="0" time="0.014">
+        <testcase name="test1" value_param="0" status="run" time="0.002" classname="UnitTest/Sample1" kernelname="kname" parameters="params" isa="AVX512" unit="None" parallelization_factor="1" mean="0.0000" stddev="0.000000"/>
+    </testsuite>
+    <testsuite name="UnitTest/Sample2" tests="1" failures="0" disabled="0" errors="0" time="0.014">
+        <testcase name="test2" value_param="0" status="run" time="0.002" classname="UnitTest/Sample2" kernelname="kname" parameters="params" isa="AVX512" unit="None" parallelization_factor="1" mean="0.0000" stddev="0.000000"/>
+    </testsuite>
+</testsuites>
