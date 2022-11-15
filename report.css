@@ -41,8 +41,7 @@ table.fold-table > tbody > tr.view:nth-child(4n-1) {
 }
 
 table.fold-table > tbody > tr.view.open {
-    background: tomato;
-    color: white;
+    background: lightsalmon;
 }
 
 table.fold-table > tbody > tr.view.open td:first-child:before,
