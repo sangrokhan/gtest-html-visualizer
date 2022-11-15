@@ -5,5 +5,4 @@ This project is to generate simple HTML page with multiple gtest report (XML fil
 ## TODO list
 1. Generate testsuite table
 2. Title & report title  
-3. Coloring pass fail disabled cases
-4. Reference file option (testcase should exist)
+3. Reference file option (when gtest output did not exist because of error. e.g.) segfault)

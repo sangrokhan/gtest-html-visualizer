@@ -52,22 +52,38 @@ DetailReportHeader = \
 outputFileName = "index.html"
 
 
-def appendImage(data):
+def getStatus(data):
+    status = "pass"
     if (data[2] != '0'):
-        ret = '''<td><img src="fail.png" style="width:16px;height:16px"></td>'''
+        status = "failed"
     elif (data[3] != '0'):
+        status = "disabled"
+    return status
+
+
+def appendImage(status):
+    if (status == "failed"):
+        ret = '''<td><img src="fail.png" style="width:16px;height:16px"></td>'''
+    elif (status == "disabled"):
         ret = '''<td><img src="warning.png" style="width:16px;height:16px"></td>'''
     else:
         ret = '''<td><img src="pass.png" style="width:16px;height:16px"></td>'''
     return ret
 
-def genTableRows(data, depth):
-    ret = ""
-    if (depth == 1):
-        ret += "<tr class=\"view\">"
-        ret += appendImage(data)
-    else:
-        ret += "<tr class=\"fold\">"
+
+def genTableRows(data, status, classes):
+    ret = "<tr"
+    if (len(classes)):
+        ret += " class=\""
+        for item in classes:
+            ret += item + " "
+        ret += "\""
+    ret += ">"
+
+#    ret += "<tr class=\"view\">"
+    ret += appendImage(status)
+#    else:
+#        ret += "<tr class=\"fold\">"
     ret += genTableItem(data)
     ret += "</tr>"
     return ret
@@ -93,14 +109,20 @@ def genHTMLDoc(inFiles, outDir):
         totTestNum += int(root.attrib['tests'])
         totFailNum += int(root.attrib['failures'])
         totDisabledNum += int(root.attrib['disabled'])
-        reports += genTableRows([fNameOnly, root.attrib['tests'], root.attrib['failures'],
-                                 root.attrib['disabled'], root.attrib['timestamp']], 1)
+        data = [fNameOnly, root.attrib['tests'], root.attrib['failures'],
+                root.attrib['disabled'], root.attrib['timestamp']]
+        status = getStatus(data)
+        classes = ["view", status]
+        reports += genTableRows(data, status, classes)
         suites = root.findall('./testsuite')
         for suite in suites:
             pass
 
-    reports = genTableRows(["Total", str(totTestNum), str(totFailNum), str(
-        totDisabledNum), datetime.now().strftime('%Y-%m-%dT%H:%M:%S')], 1) + reports
+    data = ["Total", str(totTestNum), str(totFailNum), str(
+        totDisabledNum), datetime.now().strftime('%Y-%m-%dT%H:%M:%S')]
+    status = getStatus(data)
+    classes = [status]
+    reports = genTableRows(data, status, classes) + reports
     reports = "<tbody>" + reports + "</tbody>"
     htmlDoc = htmlForm.format(report=ReportHeader + reports)
     # print(htmlDoc)

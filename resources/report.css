@@ -1,12 +1,29 @@
 body { padding: 0.2em 2em; }
 
 table {
-    border: 1px solid black;
+    border: 2px solid black;
     width: 100%;
     border-collapse: collapse;
 }
 
-table th { border-bottom: 1px solid #ccc; }
+.failed {
+    background-color: #fea49f;
+}
+
+.pass {
+    background-color: lightgreen;
+}
+
+.disabled {
+    background-color: #f6d8ac;
+}
+
+table th {
+    border: 1px solid #bbb;
+    background-color: lightsteelblue;
+}
+
+table td { border: 1px solid #ccc; }
 
 table th, table td { padding: 0.4em; text-align: center; }
 
