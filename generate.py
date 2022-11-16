@@ -4,6 +4,7 @@ import glob
 import shutil
 import xml.etree.ElementTree as elemTree
 from datetime import datetime
+import csv
 
 htmlForm = '''<!DOCTYPE html>
 <html lang="en">
@@ -57,14 +58,14 @@ def getStatus(data):
     if (data[2] != '0'):
         status = "failed"
     elif (data[3] != '0'):
-        status = "disabled"
+        status = "warning"
     return status
 
 
 def appendImage(status):
     if (status == "failed"):
         ret = '''<td><img src="fail.png" style="width:16px;height:16px"></td>'''
-    elif (status == "disabled"):
+    elif (status == "warning"):
         ret = '''<td><img src="warning.png" style="width:16px;height:16px"></td>'''
     else:
         ret = '''<td><img src="pass.png" style="width:16px;height:16px"></td>'''
@@ -92,15 +93,25 @@ def genTableRows(data, status, classes):
 def genTableItem(data):
     ret = ""
     for item in data:
-        ret += f"<td>{item}</td>"
+        ret += "<td>" + item + "</td>"
     return ret
 
 
-def genHTMLDoc(inFiles, outDir):
+def genHTMLDoc(inFiles, outDir, csvInfo):
     totTestNum = 0
     totFailNum = 0
     totDisabledNum = 0
     reports = ""
+
+    if csvInfo != None:
+        fNameOnlyList = []
+        for fName in inFiles:
+            fNameOnlyList.append(os.path.basename(fName))
+
+        for testName in csvInfo:
+            tmpName = testName + ".xml"
+            if tmpName not in fNameOnlyList:
+                reports += genTableRows([tmpName, "", "", "", "Unknown Error"], "warning", ["error"])
 
     for fName in inFiles:
         fNameOnly = os.path.basename(fName)
@@ -148,21 +159,29 @@ if __name__ == '__main__':
 
     inputDir = sys.argv[1]
     outputDir = sys.argv[2]
+    csvInfo = None
 
     # Setup output folder (check existence & clean up)
     if os.path.isdir(outputDir):
-        print(f"Remove files in the \"{outputDir}\"")
+        print("Remove files in the \"" + outputDir + "\"")
         shutil.rmtree(outputDir, ignore_errors=True)
     shutil.copytree("resources", outputDir)
 
     # Input folder exist & check at lease one XML file
     if not os.path.isdir(inputDir):
-        print(f"Directory \"{inputDir}\" is not exist. Terminate")
+        print("Directory \"" + inputDir "\" is not exist. Terminate")
         sys.exit(0)
 
     inputFiles = glob.glob(inputDir + "/*.xml")
     if len(inputFiles) == 0:
-        print(f"There is no xml file in \"{inputDir}\". Terminate")
+        print("There is no xml file in \"" + inputDir + "\". Terminate")
+
+    if (len(sys.argv) == 4):
+        csvInfo = []
+        with open(sys.argv[3]) as csvfile:
+            reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in reader:
+                csvInfo.extend(row)
 
     # Generate HTML Doc from XML files
     genHTMLDoc(inputFiles, outputDir)

@@ -18,6 +18,11 @@ table {
     background-color: #f6d8ac;
 }
 
+.error {
+    background-color: orange;
+    color: white;
+}
+
 table th {
     border: 1px solid #bbb;
     background-color: lightsteelblue;
