@@ -169,7 +169,7 @@ if __name__ == '__main__':
 
     # Input folder exist & check at lease one XML file
     if not os.path.isdir(inputDir):
-        print("Directory \"" + inputDir "\" is not exist. Terminate")
+        print("Directory \"" + inputDir + "\" is not exist. Terminate")
         sys.exit(0)
 
     inputFiles = glob.glob(inputDir + "/*.xml")
@@ -184,4 +184,4 @@ if __name__ == '__main__':
                 csvInfo.extend(row)
 
     # Generate HTML Doc from XML files
-    genHTMLDoc(inputFiles, outputDir)
+    genHTMLDoc(inputFiles, outputDir, csvInfo)
